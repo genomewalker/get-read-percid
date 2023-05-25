@@ -24,29 +24,14 @@ import logging
 
 from get_read_percid.utils import (
     get_arguments,
-    create_output_files,
-    splitkeep,
-    fast_flatten,
 )
 from get_read_percid.lib import (
     load_references,
-    filter_damaged_taxa,
-    load_fb_results,
-    filter_fb_references,
 )
-from get_read_percid.defaults import valid_ranks
 from get_read_percid.extract import get_read_percid, get_percid
-import pandas as pd
 import os
 import pysam
 import numpy as np
-from Bio import SeqIO, SeqRecord
-import gzip
-from mimetypes import guess_type
-from functools import partial
-import tqdm
-from collections import defaultdict
-import re
 
 
 log = logging.getLogger("my_logger")

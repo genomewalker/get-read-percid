@@ -1,15 +1,11 @@
 import tqdm
 import pysam
-from Bio import Seq
 import logging
 from multiprocessing import Pool
-from collections import defaultdict
 from functools import partial
 from get_read_percid.utils import is_debug, calc_chunksize, initializer
-import os
 import numpy as np
 import sys
-import pandas as pd
 import gzip
 
 # import cProfile as profile
@@ -24,7 +20,7 @@ def get_percid(bam, prefix=None, threads=1):
     if prefix is not None:
         ofname = f"{prefix}.percid.csv.gz"
     else:
-        ofname = f"sample.percid.csv.gz"
+        ofname = "sample.percid.csv.gz"
     # get number of reads in the file
     n_reads = samfile.count(until_eof=True)
     samfile.close()
