@@ -28,7 +28,7 @@ requirements:
     
 test:
   commands:
-    - dReads -h
+    - getRPercId -h
 
 about:
   home: https://github.com/genomewalker/get-read-percid

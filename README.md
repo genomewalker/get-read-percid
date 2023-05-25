@@ -2,7 +2,7 @@
 # getRPercId: a tool to extract references from BAM files and get read statistics
 
 
-[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/genomewalker/get-read-percid?include_prereleases&label=version)](https://github.com/genomewalker/get-read-percid/releases) [![get-read-percid](https://github.com/genomewalker/get-read-percid/workflows/dReads_ci/badge.svg)](https://github.com/genomewalker/get-read-percid/actions) [![PyPI](https://img.shields.io/pypi/v/get-read-percid)](https://pypi.org/project/get-read-percid/) [![Conda](https://img.shields.io/conda/v/genomewalker/get-read-percid)](https://anaconda.org/genomewalker/get-read-percid)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/genomewalker/get-read-percid?include_prereleases&label=version)](https://github.com/genomewalker/get-read-percid/releases) [![get-read-percid](https://github.com/genomewalker/get-read-percid/workflows/getRPercId_ci/badge.svg)](https://github.com/genomewalker/get-read-percid/actions) [![PyPI](https://img.shields.io/pypi/v/get-read-percid)](https://pypi.org/project/get-read-percid/) [![Conda](https://img.shields.io/conda/v/genomewalker/get-read-percid)](https://anaconda.org/genomewalker/get-read-percid)
 
 A simple tool to extract references from BAM files and get read statistics
 
@@ -83,7 +83,7 @@ optional arguments:
   --version             Print program version
 ```
 
-One would run `dReads` as:
+One would run `getRPercId` as:
 
 ```bash
 getRPercId --bam 3e3ce8e9f7.94.dmg-reads.dedup.filtered.bam --reference-list ref-list.csv --prefix 3e3ce8e9f7
