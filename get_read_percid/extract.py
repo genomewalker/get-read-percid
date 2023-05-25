@@ -82,7 +82,7 @@ def get_ids_and_filter(params, refs, prefix, threads=1):
             referencelengths=ref_lengths,
             threads=1,
         )
-        _open = partial(gzip.open, mode="at") if ofname.endswith(".gz") else open
+        _open = partial(gzip.open, mode="wt") if ofname.endswith(".gz") else open
         with _open(ofname) as f:
             for aln in samfile.fetch(
                 contig=reference, multiple_iterators=False, until_eof=True
