@@ -25,7 +25,7 @@ def get_percid(bam, prefix=None, threads=1):
     n_reads = samfile.count(until_eof=True)
     samfile.close()
     samfile = pysam.AlignmentFile(bam, "rb", threads=threads)
-    _open = partial(gzip.open, mode="at") if ofname.endswith(".gz") else open
+    _open = partial(gzip.open, mode="wt") if ofname.endswith(".gz") else open
     with _open(ofname) as f:
         for aln in tqdm.tqdm(
             samfile.fetch(until_eof=True),
