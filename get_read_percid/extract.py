@@ -39,14 +39,13 @@ def get_percid(bam, prefix=None, threads=1):
     samfile.close()
 
 
-def get_ids_and_filter(params, refs, prefix, threads=1):
+def get_ids_and_filter(params, refs, reads, prefix, threads=1):
     bam, references = params
 
     samfile = pysam.AlignmentFile(bam, "rb", threads=threads)
 
     # convert the dictionary to an array
     refs_dict = dict(zip(samfile.references, samfile.lengths))
-
     for reference in references:
         my_array = np.array(list(refs_dict.items()))
 
@@ -75,6 +74,7 @@ def get_ids_and_filter(params, refs, prefix, threads=1):
         else:
             ofname = f"{ref_name}--percid.csv.gz"
             obam_file = f"{ref_name}.bam"
+
         out_bam_file = pysam.AlignmentFile(
             obam_file,
             "wb",
@@ -82,16 +82,28 @@ def get_ids_and_filter(params, refs, prefix, threads=1):
             referencelengths=ref_lengths,
             threads=1,
         )
+
         _open = partial(gzip.open, mode="wt") if ofname.endswith(".gz") else open
         with _open(ofname) as f:
             for aln in samfile.fetch(
                 contig=reference, multiple_iterators=False, until_eof=True
             ):
-                ani_read = (1 - ((aln.get_tag("NM") / aln.infer_query_length()))) * 100
-                f.write(f"{aln.query_name},{ani_read}\n")
-                aln.reference_id = refs_idx[ref_name]
-                out_bam_file.write(aln)
-
+                if reads is None:
+                    ani_read = (
+                        1 - ((aln.get_tag("NM") / aln.infer_query_length()))
+                    ) * 100
+                    f.write(f"{aln.query_name},{ani_read}\n")
+                    aln.reference_id = refs_idx[ref_name]
+                    out_bam_file.write(aln)
+                else:
+                    if aln.query_name in reads:
+                        if reads[aln.query_name] == reference:
+                            ani_read = (
+                                1 - ((aln.get_tag("NM") / aln.infer_query_length()))
+                            ) * 100
+                            f.write(f"{aln.query_name},{ani_read}\n")
+                            aln.reference_id = refs_idx[ref_name]
+                            out_bam_file.write(aln)
         out_bam_file.close()
 
     samfile.close()
@@ -100,6 +112,7 @@ def get_ids_and_filter(params, refs, prefix, threads=1):
 def get_read_percid(
     bam,
     refs,
+    reads,
     prefix=None,
     chunksize=None,
     threads=1,
@@ -123,6 +136,7 @@ def get_read_percid(
                 partial(
                     get_ids_and_filter,
                     refs=refs,
+                    reads=reads,
                     prefix=prefix,
                     threads=threads,
                 ),
@@ -145,6 +159,7 @@ def get_read_percid(
                     partial(
                         get_ids_and_filter,
                         refs=refs,
+                        reads=reads,
                         prefix=prefix,
                         threads=threads,
                     ),

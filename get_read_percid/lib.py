@@ -39,6 +39,30 @@ def load_references(file_path):
     return references
 
 
+def load_reads_and_references(file_path):
+    """Function to read a mdmg results file to a pandas dataframe
+    Args:
+        file_path (str): A file path pointing to a mdmg results file
+    Returns:
+        pandas.DataFrame: A pandas dataframe containing the mdmg results
+    """
+    reads_df = pd.read_csv(file_path, sep=",", index_col=None, header=None)
+    # check how many columns are in the file
+    if len(reads_df.columns) == 3:
+        reads_df.columns = ["reference", "read", "reference_renamed"]
+        reads = dict(zip(reads_df.read, reads_df.reference))
+        references = dict(zip(reads_df.reference, reads_df.reference_renamed))
+        return reads, references
+    elif len(reads_df.columns) == 2:
+        reads_df.columns = ["reference", "read"]
+        reads_df["reference_renamed"] = reads_df["reference"]
+        reads = dict(zip(reads_df.read, reads_df.reference))
+        return reads, None
+    else:
+        reads = None
+        return reads, None
+
+
 def load_fb_results(file_path):
     """Function to read a filterBAM results file to a pandas dataframe
     Args:

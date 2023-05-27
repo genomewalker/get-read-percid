@@ -25,13 +25,12 @@ import logging
 from get_read_percid.utils import (
     get_arguments,
 )
-from get_read_percid.lib import (
-    load_references,
-)
+from get_read_percid.lib import load_references, load_reads_and_references
 from get_read_percid.extract import get_read_percid, get_percid
 import os
 import pysam
 import numpy as np
+import sys
 
 
 log = logging.getLogger("my_logger")
@@ -49,16 +48,26 @@ def main():
         logging.DEBUG if args.debug else logging.INFO
     )
 
+    if args.reference_list and args.read_list:
+        log.error("You cannot provide both a reference list and a read list")
+        sys.exit(1)
+
     # Check that rank and taxonomy file are both present
     if args.reference_list:
         log.info("Loading references list...")
         references = load_references(args.reference_list)
         if references is None:
-            log.error(
-                "The reference list file has an invalid number of columns. Exiting"
-            )
+            log.error("The reference list file has an invalid number of columns.")
     else:
         references = None
+
+    if args.read_list:
+        log.info("Loading read list...")
+        reads, references = load_reads_and_references(args.read_list)
+        if references is None or reads is None:
+            log.error("The read list file has an invalid number of columns")
+    else:
+        reads = None
 
     logging.info("Loading BAM file...")
     save = pysam.set_verbosity(0)
@@ -113,9 +122,7 @@ def main():
         refs_tax = list(refs_tax)
         # check that references in refs_tax are the same than in references
         if not set(refs_tax) == set(references.keys()):
-            log.error(
-                "Some references in the taxonomy file are not in the BAM file. Exiting"
-            )
+            log.error("Some references in the file are not in the BAM file.")
             exit(1)
         if not refs_tax:
             log.error("No references found in BAM file")
@@ -123,6 +130,7 @@ def main():
         reads = get_read_percid(
             bam=bam,
             refs=references,
+            reads=reads,
             threads=args.threads,
             prefix=args.prefix,
             chunksize=args.chunk_size,
@@ -137,9 +145,9 @@ def main():
 
     if os.path.exists(sorted_bam_index_bai):
         os.remove(sorted_bam_index_bai)
-    elif os.path.exists(sorted_bam_index_csi):
+    if os.path.exists(sorted_bam_index_csi):
         os.remove(sorted_bam_index_csi)
-    elif os.path.exists(sorted_bam):
+    if os.path.exists(sorted_bam):
         os.remove(sorted_bam)
     logging.info("Done!")
 

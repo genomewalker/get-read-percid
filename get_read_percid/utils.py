@@ -187,6 +187,7 @@ help_msg = {
     "bam": "The BAM file used to generate the metaDMG results",
     "prefix": "Prefix used for the output files",
     "reference_list": "A list of references that we want to extract from the BAM file",
+    "read_list": "A list of reads that we want to extract from the BAM file",
     "rank": "Which taxonomic group and rank we want to get the reads extracted.",
     "sort_by_queryname": "Sort BAM file by queryname",
     "sort_by_coordinate": "Sort BAM file by coordinate",
@@ -217,12 +218,18 @@ def get_arguments(argv=None):
         required=True,
     )
     required.add_argument(
-        "-r",
         "--reference-list",
         type=lambda x: is_valid_file(parser, x, "--reference-list"),
         dest="reference_list",
         metavar="FILE",
         help=help_msg["reference_list"],
+    )
+    required.add_argument(
+        "--read-list",
+        type=lambda x: is_valid_file(parser, x, "--read-list"),
+        dest="read_list",
+        metavar="FILE",
+        help=help_msg["read_list"],
     )
     optional.add_argument(
         "--prefix",
