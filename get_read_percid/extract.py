@@ -35,7 +35,9 @@ def get_percid(bam, prefix=None, threads=1):
             unit=" reads",
         ):
             ani_read = (1 - ((aln.get_tag("NM") / aln.infer_query_length()))) * 100
-            f.write(f"{aln.query_name},{aln.reference_name},{ani_read}\n")
+            f.write(
+                f"{aln.query_name},{aln.reference_name},{aln.infer_query_length()},{ani_read}\n"
+            )
     samfile.close()
 
 
