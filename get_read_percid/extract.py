@@ -94,7 +94,9 @@ def get_ids_and_filter(params, refs, reads, prefix, threads=1):
                     ani_read = (
                         1 - ((aln.get_tag("NM") / aln.infer_query_length()))
                     ) * 100
-                    f.write(f"{aln.query_name},{ani_read}\n")
+                    f.write(
+                        f"{aln.query_name},{aln.reference_name},{aln.infer_query_length()},{ani_read}\n"
+                    )
                     aln.reference_id = refs_idx[ref_name]
                     out_bam_file.write(aln)
                 else:
@@ -103,7 +105,9 @@ def get_ids_and_filter(params, refs, reads, prefix, threads=1):
                             ani_read = (
                                 1 - ((aln.get_tag("NM") / aln.infer_query_length()))
                             ) * 100
-                            f.write(f"{aln.query_name},{ani_read}\n")
+                            f.write(
+                                f"{aln.query_name},{aln.reference_name},{aln.infer_query_length()},{ani_read}\n"
+                            )
                             aln.reference_id = refs_idx[ref_name]
                             out_bam_file.write(aln)
         out_bam_file.close()
