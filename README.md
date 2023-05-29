@@ -59,8 +59,8 @@ For a complete list of options:
 ```bash
 $ getRPercId --help
 
-usage: getRPercId [-h] -b FILE [-r FILE] [--prefix STR] [--sort-memory STR] [--threads INT]
-                  [--chunk-size INT] [--debug] [--version]
+usage: getRPercId [-h] -b FILE [--reference-list FILE] [--read-list FILE] [--prefix STR]
+                  [--sort-memory STR] [--threads INT] [--chunk-size INT] [--debug] [--version]
 
 A simple tool to extract references from BAM files and get read statistics
 
@@ -69,9 +69,11 @@ options:
 
 required arguments:
   -b FILE, --bam FILE   The BAM file used to generate the metaDMG results (default: None)
-  -r FILE, --reference-list FILE
+  --reference-list FILE
                         A list of references that we want to extract from the BAM file
                         (default: None)
+  --read-list FILE      A list of reads that we want to extract from the BAM file (default:
+                        None)
 
 optional arguments:
   --prefix STR          Prefix used for the output files (default: None)
@@ -113,3 +115,14 @@ M_A00706:51:HK27GDSXX:3:1640:27950:10410,3300000854_1,97.5609756097561
 ```
 
 where the first column is the read name, the second column is the reference name, and the third column is the identity to the reference.
+
+One can also can provide a list of reads to extract from the BAM file. The read list file is a CSV file with the following format:
+
+```txt
+3300025461_7,M_A00706:51:HK27GDSXX:1:1101:10031:18865,c_000000000001
+3300025461_7,M_A00706:51:HK27GDSXX:1:1101:10113:5384,c_000000000001
+3300025461_7,M_A00706:51:HK27GDSXX:1:1101:10321:28573,c_000000000001
+3300025461_7,M_A00706:51:HK27GDSXX:1:1101:10484:13510,c_000000000001
+```
+
+Where the first column is the reference, the second column is the read name, and the third column is the new reference name we want to give. This last column is optional.
