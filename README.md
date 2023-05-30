@@ -98,23 +98,13 @@ $ cat ref-list.csv
 3300025461_7,c_000000000001
 ```
 
-The program will output a CSV file with the following format when using a reference list:
 
-```bash
-$ gzcat 3e3ce8e9f7___c_000000000001--percid.csv.gz | head -n 2
-M_A00706:51:HK27GDSXX:1:1342:26467:11694,99.03846153846155
-M_A00706:51:HK27GDSXX:3:2465:29243:32690,97.45222929936305
-```
-
-And a CSV file with the following format when not using a reference list:
-
-```bash
-$ gzcat 3e3ce8e9f7.percid.csv.gz | head -n 2
-M_A00706:51:HK27GDSXX:1:2134:16495:25582,3300000854_1,95.1219512195122
-M_A00706:51:HK27GDSXX:3:1640:27950:10410,3300000854_1,97.5609756097561
-```
-
-where the first column is the read name, the second column is the reference name, and the third column is the identity to the reference.
+For each read, the program will generate the following stats:
+- read_name
+- reference_name (if the reference list is provided)
+- read length
+- percent identity
+- %GC content
 
 One can also can provide a list of reads to extract from the BAM file. The read list file is a CSV file with the following format:
 
