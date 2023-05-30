@@ -14,6 +14,20 @@ import gzip
 log = logging.getLogger("my_logger")
 
 
+# function to calculate GC content
+def calc_gc_content(seq):
+    """Calculate GC content of a sequence
+
+    Args:
+        seq (str): DNA sequence
+
+    Returns:
+        int: Number of GC content
+    """
+    gc = seq.count("G") + seq.count("C")
+    return gc
+
+
 def get_percid(bam, prefix=None, threads=1):
     samfile = pysam.AlignmentFile(bam, "rb", threads=threads)
     # write results to csv file
@@ -34,9 +48,11 @@ def get_percid(bam, prefix=None, threads=1):
             disable=is_debug(),
             unit=" reads",
         ):
+            if aln.is_unmapped:
+                continue
             ani_read = (1 - ((aln.get_tag("NM") / aln.infer_query_length()))) * 100
             f.write(
-                f"{aln.query_name},{aln.reference_name},{aln.infer_query_length()},{ani_read}\n"
+                f"{aln.query_name},{aln.reference_name},{aln.infer_query_length()},{ani_read},{calc_gc_content(aln.query_sequence)}\n"
             )
     samfile.close()
 
@@ -90,11 +106,15 @@ def get_ids_and_filter(params, refs, reads, prefix, threads=1):
             for aln in samfile.fetch(
                 contig=reference, multiple_iterators=False, until_eof=True
             ):
+                if aln.is_unmapped:
+                    continue
                 if reads is None:
                     ani_read = (
                         1 - ((aln.get_tag("NM") / aln.infer_query_length()))
                     ) * 100
-                    f.write(f"{aln.query_name},{aln.infer_query_length()},{ani_read}\n")
+                    f.write(
+                        f"{aln.query_name},{aln.infer_query_length()},{ani_read},{calc_gc_content(aln.query_sequence)}\n"
+                    )
                     aln.reference_id = refs_idx[ref_name]
                     out_bam_file.write(aln)
                 else:
@@ -104,7 +124,7 @@ def get_ids_and_filter(params, refs, reads, prefix, threads=1):
                                 1 - ((aln.get_tag("NM") / aln.infer_query_length()))
                             ) * 100
                             f.write(
-                                f"{aln.query_name},{aln.infer_query_length()},{ani_read}\n"
+                                f"{aln.query_name},{aln.infer_query_length()},{ani_read},{calc_gc_content(aln.query_sequence)}\n"
                             )
                             aln.reference_id = refs_idx[ref_name]
                             out_bam_file.write(aln)
